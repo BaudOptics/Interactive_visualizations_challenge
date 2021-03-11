@@ -57,6 +57,8 @@ function updateBarChart(data,value){
     Plotly.newPlot('bar',chartData);
 }
 
+//function for populating table of metadata
+
 function populateTable(data,value){
     //adding ul and li tags to populate metadata table
     console.log(data.metadata[value].id)
@@ -83,6 +85,8 @@ function populateTable(data,value){
             .text(`wfreq: ${data.metadata[value].wfreq}`)
             .attr('id','wfreq')
 }
+
+//function for updating bubble chart
 
 function updateBubbleChart(data,value){
         let sampleValues = [];
@@ -122,6 +126,8 @@ function updateBubbleChart(data,value){
     Plotly.newPlot('bubble',chartData);
 }
 
+//function for editing table
+
 function editTable(data,value){
     let metadata = d3.select('#sample-metadata');
     metadata.select('#ID')
@@ -139,6 +145,8 @@ function editTable(data,value){
     metadata.select('#wfreq')
             .text(`wfreq: ${data.metadata[value].wfreq}`)
 }
+
+//initialization function, necessary for not adding hundreds of tables
 
 function init(value){
 //reading the json file
