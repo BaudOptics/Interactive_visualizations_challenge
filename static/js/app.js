@@ -20,16 +20,16 @@ function makeBarChart(data, value){
     //console.log(`otuLabels: ${otuLabels}`)
     //console.log(otuLabels.length)
     //putting these arrays into a dictionary
-    // let trace1={
-    //     y:sampleValues,
-    //     x:otuLabels,
-    //     type: "bar"
-    // };
-    // let chartData = trace1;
-    // let layout = {
-        
-    // }
-    // Plotly.newPlot('bar',chartData,layout);
+    let trace1={
+        x:sampleValues,
+        y:String(otuIDs),
+        type: "bar",
+        orientation: "h"
+    };
+    console.log(trace1);
+    let chartData = [trace1];
+    
+    Plotly.newPlot('bar',chartData);
 }
 
 function populateTable(data,value){
@@ -98,6 +98,7 @@ function init(value){
                 .append('option')
                 .attr('value',(d,i)=>i)
                 .text(d=>d);
+        //populating table with first entry
         populateTable(data,0)
     })
 }
