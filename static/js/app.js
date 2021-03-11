@@ -1,56 +1,43 @@
 const url = './data/samples.json'
 
 //function for creating bar chart
-function makeBarChart(data, value){
-    //pulling data from dataset
-    let sampleValues = [];
-    for (i=0;i<10;i++){
-        sampleValues.push(data.samples[value].sample_values[i]);
-    }
-    console.log(`sampleValues:${sampleValues}`)
-    let otuIDs = [];
-    for(i=1;i<10;i++){
-        otuIDs.push(`OTU ${data.samples[value].otu_ids[i]}`);
-    }
-    console.log(`otuIDs: ${otuIDs}`)
-    console.log(Array.from(otuIDs))
-    let otuLabels = [];
-    for (i=0;i<10;i++){
-        otuLabels.push(data.samples[value].otu_labels[i]);
-    }
-    //console.log(`otuLabels: ${otuLabels}`)
-    //console.log(otuLabels.length)
-    let trace1={
-        x:sampleValues.reverse(),
-        y:Array.from(otuIDs),
-        text:Array.from(otuLabels),
-        type: "bar",
-        orientation: "h"
-    };
-    layout ={
-            
-    }
-    console.log(trace1);
-    let chartData = [trace1];
-    
-    Plotly.newPlot('bar',chartData,layout);
-}
 
 function updateBarChart(data,value){
         let sampleValues = [];
-    for (i=0;i<10;i++){
-        sampleValues.push(data.samples[value].sample_values[i]);
-    }
+        if (data.samples[value].sample_values.length < 10){
+                for (i=0;i<data.samples[value].sample_values.length;i++){
+                        sampleValues.push(data.samples[value].sample_values[i]);
+                }
+        }
+        else {
+                for (i=0;i<10;i++){
+                        sampleValues.push(data.samples[value].sample_values[i]);
+                }
+        }
     console.log(`sampleValues:${sampleValues}`)
     let otuIDs = [];
-    for(i=0;i<10;i++){
-        otuIDs.push(`UTO ${data.samples[value].otu_ids[i]}`);
+    if (data.samples[value].otu_ids.length<10){
+        for(i=0;i<data.samples[value].otu_ids.length;i++){
+                otuIDs.push(`UTO ${data.samples[value].otu_ids[i]}`);
+        }
+    }
+    else {
+        for(i=0;i<10;i++){
+                otuIDs.push(`UTO ${data.samples[value].otu_ids[i]}`);
+        } 
     }
     console.log(`otuIDs: ${otuIDs}`)
     let otuLabels = [];
-    for (i=0;i<10;i++){
-        otuLabels.push(data.samples[value].otu_labels[i]);
-    }
+    if (data.samples[value].otu_labels.length<10){
+        for (i=0;i<data.samples[value].otu_labels.length;i++){
+                otuLabels.push(data.samples[value].otu_labels[i]);
+        }
+        }
+        else {
+                for (i=0;i<10;i++){
+                        otuLabels.push(data.samples[value].otu_labels[i]);
+                }  
+        }
     console.log(`otuLabels: ${otuLabels}`)
     //console.log(otuLabels.length)
     let trace1={
@@ -97,6 +84,44 @@ function populateTable(data,value){
             .attr('id','wfreq')
 }
 
+function updateBubbleChart(data,value){
+        let sampleValues = [];
+        for (i=0;i<data.samples[value].sample_values.length;i++){
+                sampleValues.push(data.samples[value].sample_values[i]);
+        }
+    console.log(`sampleValues:${sampleValues}`)
+    let otuIDs = [];
+    let colors = [];
+        for(i=0;i<data.samples[value].otu_ids.length;i++){
+                otuIDs.push(data.samples[value].otu_ids[i]);
+                colors.push(`rgb(${data.samples[value].otu_ids[i]/1000},${data.samples[value].otu_ids[i]/100},${data.samples[value].otu_ids[i]/10})`)
+        }
+    console.log(`colors: ${colors}`)
+    console.log(`otuIDs: ${otuIDs}`)
+    let otuLabels = [];
+        for (i=0;i<data.samples[value].otu_labels.length;i++){
+                otuLabels.push(data.samples[value].otu_labels[i]);
+        }
+    console.log(`otuLabels: ${otuLabels}`)
+    
+    let trace1={
+        x:Array.from(otuIDs),
+        y:sampleValues,
+        text:Array.from(otuLabels),
+        mode: "markers",
+        marker:{
+                size:sampleValues,
+                color:Array.from(colors)
+        }
+    };
+
+    console.log('bubble chart trace');
+    console.log(trace1)
+    let chartData = [trace1];
+    
+    Plotly.newPlot('bubble',chartData);
+}
+
 function editTable(data,value){
     let metadata = d3.select('#sample-metadata');
     metadata.select('#ID')
@@ -125,7 +150,9 @@ function init(value){
         //console.log(data.names.forEach(d=>d))
 
         //creating initial bar chart
-        makeBarChart(data,value)
+        updateBarChart(data,value)
+
+        updateBubbleChart(data,value)
 
         //accessing dropdown menu using d3
         let dropDown = d3.select('#selDataset');
@@ -148,6 +175,9 @@ function update(value){
     
             //updating bar chart
             updateBarChart(data,value)
+
+            //updating bubble chart
+            updateBubbleChart(data,value)
     
             //updating table
             editTable(data,value)
