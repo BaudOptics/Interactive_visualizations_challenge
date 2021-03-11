@@ -17,19 +17,64 @@ function makeBarChart(data, value){
     for (i=0;i<10;i++){
         otuLabels.push(data.samples[value].otu_labels[i]);
     }
-    console.log(`otuLabels: ${otuLabels}`)
-    console.log(otuLabels.length)
+    //console.log(`otuLabels: ${otuLabels}`)
+    //console.log(otuLabels.length)
     //putting these arrays into a dictionary
-    let trace1={
-        y:sampleValues,
-        x:otuLabels,
-        type: "bar"
-    };
-    let chartData = trace1;
-    let layout = {
+    // let trace1={
+    //     y:sampleValues,
+    //     x:otuLabels,
+    //     type: "bar"
+    // };
+    // let chartData = trace1;
+    // let layout = {
         
-    }
-    Plotly.newPlot('bar',chartData,layout);
+    // }
+    // Plotly.newPlot('bar',chartData,layout);
+}
+
+function populateTable(data,value){
+    //adding ul and li tags to populate metadata table
+    console.log(data.metadata[value].id)
+    let metadata = d3.select('#sample-metadata').append('ul');
+    metadata.append('li')
+            .text(`id: ${data.metadata[value].id}`)
+            .attr('id','ID')
+    metadata.append('li')
+            .text(`ethnicity: ${data.metadata[value].ethnicity}`)
+            .attr('id',"ethnicity")
+    metadata.append('li')
+            .text(`gender: ${data.metadata[value].gender}`)
+            .attr('id','gender')
+    metadata.append('li')
+            .text(`age: ${data.metadata[value].age}`)
+            .attr('id','age')
+    metadata.append('li')
+            .text(`location: ${data.metadata[value].location}`)
+            .attr('id','location')
+    metadata.append('li')
+            .text(`bbtype: ${data.metadata[value].bbtype}`)
+            .attr('id','bbtype')
+    metadata.append('li')
+            .text(`wfreq: ${data.metadata[value].wfreq}`)
+            .attr('id','wfreq')
+}
+
+function editTable(data,value){
+    let metadata = d3.select('#sample-metadata');
+    metadata.select('#ID')
+            .text(`id: ${data.metadata[value].id}`)
+    metadata.select('#ethnicity')
+            .text(`ethnicity: ${data.metadata[value].ethnicity}`)
+    metadata.select('#gender')
+            .text(`gender: ${data.metadata[value].gender}`)
+    metadata.select("#age")
+            .text(`age: ${data.metadata[value].age}`)
+    metadata.select('#location')
+            .text(`location: ${data.metadata[value].location}`)
+    metadata.select('#bbtype')
+            .text(`bbtype: ${data.metadata[value].bbtype}`)
+    metadata.select('#wfreq')
+            .text(`wfreq: ${data.metadata[value].wfreq}`)
 }
 
 function init(value){
@@ -53,12 +98,22 @@ function init(value){
                 .append('option')
                 .attr('value',(d,i)=>i)
                 .text(d=>d);
-        
+        populateTable(data,0)
     })
 }
-//adding ul and li tags to populate metadata table
-// let metadata = d3.select('#sample-metadata');
-//     metadata.append('ul')
+
+//function to update tables and charts
+function update(value){
+    //reading the json file
+        d3.json(url).then(data=>{
+    
+            //updating bar chart
+            //updateBarChart(data,value)
+    
+            //updating table
+            editTable(data,value)
+        })
+    }
 
 
 
@@ -67,8 +122,8 @@ function optionChanged(){
     //selecting an option
     let dropDown = d3.select('#selDataset');
     let selection = dropDown.property('value');
-    console.log(selection);
-    init(selection);
+    console.log(`selection ${selection} has been loaded`);
+    update(selection);
 }
 
 init(0);
