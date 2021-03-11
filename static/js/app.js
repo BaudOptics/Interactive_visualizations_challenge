@@ -9,24 +9,62 @@ function makeBarChart(data, value){
     }
     console.log(`sampleValues:${sampleValues}`)
     let otuIDs = [];
-    for(i=0;i<10;i++){
-        otuIDs.push(data.samples[value].otu_ids[i]);
+    for(i=1;i<10;i++){
+        otuIDs.push(`OTU ${data.samples[value].otu_ids[i]}`);
     }
     console.log(`otuIDs: ${otuIDs}`)
+    console.log(Array.from(otuIDs))
     let otuLabels = [];
     for (i=0;i<10;i++){
         otuLabels.push(data.samples[value].otu_labels[i]);
     }
     //console.log(`otuLabels: ${otuLabels}`)
     //console.log(otuLabels.length)
-    //putting these arrays into a dictionary
     let trace1={
-        x:sampleValues,
-        y:String(otuIDs),
+        x:sampleValues.reverse(),
+        y:Array.from(otuIDs),
+        text:Array.from(otuLabels),
         type: "bar",
         orientation: "h"
     };
+    layout ={
+            
+    }
     console.log(trace1);
+    let chartData = [trace1];
+    
+    Plotly.newPlot('bar',chartData,layout);
+}
+
+function updateBarChart(data,value){
+        let sampleValues = [];
+    for (i=0;i<10;i++){
+        sampleValues.push(data.samples[value].sample_values[i]);
+    }
+    console.log(`sampleValues:${sampleValues}`)
+    let otuIDs = [];
+    for(i=0;i<10;i++){
+        otuIDs.push(`UTO ${data.samples[value].otu_ids[i]}`);
+    }
+    console.log(`otuIDs: ${otuIDs}`)
+    let otuLabels = [];
+    for (i=0;i<10;i++){
+        otuLabels.push(data.samples[value].otu_labels[i]);
+    }
+    console.log(`otuLabels: ${otuLabels}`)
+    //console.log(otuLabels.length)
+    let trace1={
+        x:sampleValues.reverse(),
+        y:Array.from(otuIDs),
+        text:Array.from(otuLabels),
+        type: "bar",
+        orientation: "h"
+    };
+
+    console.log(trace1);
+//     layout ={
+//     }
+//     console.log(layout)
     let chartData = [trace1];
     
     Plotly.newPlot('bar',chartData);
@@ -109,7 +147,7 @@ function update(value){
         d3.json(url).then(data=>{
     
             //updating bar chart
-            //updateBarChart(data,value)
+            updateBarChart(data,value)
     
             //updating table
             editTable(data,value)
